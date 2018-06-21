@@ -23,35 +23,35 @@ class mycallback(object):
         else:
             log_dir = None
         if repo_id:
-            msg = '{}: {}'.format(repo_id, msg)
+            msg = '{0}: {1}'.format(repo_id, msg)
         log(msg, header=header, log_dir=log_dir)
 
     @staticmethod
     def sizeof_fmt(num, suffix='B'):
         for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
             if abs(num) < 1024.0:
-                return '{:3.1f}{}{}'.format(num, unit, suffix)
+                return '{0:3.1f}{1}{2}'.format(num, unit, suffix)
             num /= 1024.0
-        return '{:3.1f}{}{}'.format(num, 'Yi', suffix)
+        return '{0:3.1f}{1}{2}'.format(num, 'Yi', suffix)
 
     def print_skipped(self, repo_id):
         if self.skippkg > 0:
             pkg_str = 'package' if self.skippkg == 1 else 'packages'
             reason = 'already available'
-            self.log('skipping {:d} {} ({})'.format(self.skippkg, pkg_str, reason), repo_id=repo_id)
+            self.log('skipping {0:d} {1} ({2})'.format(self.skippkg, pkg_str, reason), repo_id=repo_id)
             self.skippkg = 0 # reset after printing
 
     def gpgkey_exists(self, repo_id, keyname):
-        self.log('GPG key already exists ({})'.format(keyname), repo_id=repo_id)
+        self.log('GPG key already exists ({0})'.format(keyname), repo_id=repo_id)
 
     def gpgkey_download(self, repo_id, keyname):
-        self.log('GPG key downloaded ({})'.format(keyname), repo_id=repo_id)
+        self.log('GPG key downloaded ({0})'.format(keyname), repo_id=repo_id)
 
     def gpgkey_error(self, repo_id, error):
-        self.log('error downloading GPG key ({})'.format(error), repo_id=repo_id)
+        self.log('error downloading GPG key ({0})'.format(error), repo_id=repo_id)
 
     def repo_link_set(self, repo_id, link_type, target):
-        self.log('{} set to {}'.format(link_type, target), repo_id=repo_id)
+        self.log('{0} set to {1}'.format(link_type, target), repo_id=repo_id)
 
     def repo_init(self, repo_id, num_pkgs, islocal):
         self.totalpkg = num_pkgs
@@ -59,9 +59,9 @@ class mycallback(object):
         self.skippkg = 0
         self.islocal = islocal
         if islocal:
-            self.log('found {:d} packages (local)'.format(num_pkgs), repo_id=repo_id)
+            self.log('found {0:d} packages (local)'.format(num_pkgs), repo_id=repo_id)
         else:
-            self.log('found {:d} packages'.format(num_pkgs), repo_id=repo_id)
+            self.log('found {0:d} packages'.format(num_pkgs), repo_id=repo_id)
 
     def pkg_exists(self, repo_id, pkgname):
         self.skippkg += 1
@@ -71,13 +71,13 @@ class mycallback(object):
 
     def link_local_pkg(self, repo_id, pkgname, size):
         self.finishpkg += 1
-        self.log('({:d}/{:d}) {} ({})'.format(self.finishpkg, self.totalpkg, pkgname, self.sizeof_fmt(size)), repo_id=repo_id)
+        self.log('({0:d}/{1:d}) {2} ({3})'.format(self.finishpkg, self.totalpkg, pkgname, self.sizeof_fmt(size)), repo_id=repo_id)
 
     def delete_pkg(self, repo_id, pkgname):
-        self.log('deleting package {}'.format(pkgname), repo_id=repo_id)
+        self.log('deleting package {0}'.format(pkgname), repo_id=repo_id)
 
     def repo_error(self, repo_id, error):
-        self.log('error ({})'.format(error), repo_id=repo_id)
+        self.log('error ({0})'.format(error), repo_id=repo_id)
 
     def repo_complete(self, repo_id):
         self.print_skipped(repo_id)
@@ -91,13 +91,13 @@ class mycallback(object):
     def download_end(self, repo_id, package, size):
         if package.endswith('.rpm'):
             self.finishpkg += 1
-            self.log('({:d}/{:d}) {} ({})'.format(self.finishpkg, self.totalpkg, package, self.sizeof_fmt(size)), repo_id=repo_id)
+            self.log('({0:d}/{1:d}) {2} ({3})'.format(self.finishpkg, self.totalpkg, package, self.sizeof_fmt(size)), repo_id=repo_id)
 
     def repo_metadata(self, repo_id, status):
-        self.log('metadata is {}'.format(status), repo_id=repo_id)
+        self.log('metadata is {0}'.format(status), repo_id=repo_id)
 
     def repo_group_data(self, repo_id, status):
-        self.log('group data is {}'.format(status), repo_id=repo_id)
+        self.log('group data is {0}'.format(status), repo_id=repo_id)
 
 # load configuration
 def load_config():
@@ -116,7 +116,7 @@ def load_config():
         log('unable to parse configuration file')
         if hasattr(e, 'problem_mark'):
             mark = e.problem_mark
-            log('Error at Line {:d}, column {:d}'.format(mark.line+1, mark.column+1))
+            log('Error at Line {0:d}, column {1:d}'.format(mark.line+1, mark.column+1))
         sys.exit(1)
 
 # filter repos passed via command line
@@ -126,7 +126,7 @@ def filter_repos(config):
     if CMDLINEREPOS:
         for name in CMDLINEREPOS:
             try:
-                regex = re.compile(r"{}".format(name), re.IGNORECASE)
+                regex = re.compile(r"{0}".format(name), re.IGNORECASE)
                 for r in [r for r in config if re.search(regex, r)]:
                     filtered[r] = config[r]
             except re.error:
@@ -161,7 +161,7 @@ def stable_links(repos):
         if repo.version:
             if repo.stable:
                 util.symlink(os.path.join(repo.dir, 'stable'), repo.stable)
-                log('{}: stable set to {}'.format(repo.id, repo.stable))
+                log('{0}: stable set to {1}'.format(repo.id, repo.stable))
             else:
                 if os.path.lexists(os.path.join(repo.dir, 'stable')):
                     os.unlink(os.path.join(repo.dir, 'stable'))
@@ -183,7 +183,7 @@ def handle_repos(repos):
 def print_summary(repos, errors, elapsed):
     repo_str = 'repository' if repos == 1 else 'repositories'
     error_str = 'error' if errors == 1 else 'errors'
-    log('{:d} {}, {:d} {}, {}'.format(repos, repo_str, errors, error_str, elapsed), header=True)
+    log('{0:d} {1}, {2:d} {3}, {4}'.format(repos, repo_str, errors, error_str, elapsed), header=True)
 
 def main():
     if SHOWVERSION == True:
@@ -198,16 +198,16 @@ def main():
         try:
             repos.append(yumrepo.YumRepo(repoid, OUTDIR, repo_config[repoid]))
         except Exception as e:
-            log('{}: {} (skipping)'.format(repoid, e))
+            log('{0}: {1} (skipping)'.format(repoid, e))
             continue
 
-    log('Repos to sync: {:d}'.format(len(repos)), force=SHOWONLY)
+    log('Repos to sync: {0:d}'.format(len(repos)), force=SHOWONLY)
     if len(repos) < 1: sys.exit(0)
 
     padding = len(str(len(repos)))
     for index, repo in enumerate(repos):
-        repo_str = '{} (local)'.format(repo.id) if repo.local_dir else repo.id
-        log('{:{}d}) {}'.format(index + 1, padding, repo_str), force=SHOWONLY)
+        repo_str = '{0} (local)'.format(repo.id) if repo.local_dir else repo.id
+        log('{0:{1}d}) {2}'.format(index + 1, padding, repo_str), force=SHOWONLY)
     if SHOWONLY:
         log('Exiting without performing changes...', force=SHOWONLY)
         sys.exit(0)

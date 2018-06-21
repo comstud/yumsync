@@ -74,19 +74,19 @@ class YumRepo(object):
         if obj_name is None:
             obj_name = 'object'
         if len(valid_types) < 1:
-            raise ValueError('no valid types were passed in for {}'.format(obj_name))
+            raise ValueError('no valid types were passed in for {0}'.format(obj_name))
         if None in obj_types:
             valid_types.remove(None)
             valid_types.sort()
             valid_types.append(type(None))
         if not isinstance(obj, tuple(valid_types)):
             valid_str = ', '.join([t.__name__ for t in valid_types])
-            raise TypeError('{} is {}; must be {}'.format(obj_name, type(obj).__name__, valid_str))
+            raise TypeError('{0} is {1}; must be {2}'.format(obj_name, type(obj).__name__, valid_str))
 
     @staticmethod
     def _validate_url(url):
         if not (url.startswith('http://') or url.startswith('https://') or url.startswith('file://')):
-            raise ValueError('Unsupported URL format "{}"'.format(url))
+            raise ValueError('Unsupported URL format "{0}"'.format(url))
 
     @staticmethod
     def _set_default_opts(opts=None):
@@ -510,8 +510,8 @@ class YumRepo(object):
             raw_info['srcpkgs'] = self.srcpkgs
         if self.newestonly is not None:
             raw_info['newestonly'] = self.newestonly
-        friendly_info = ['{}({})'.format(k, raw_info[k]) for k in sorted(raw_info)]
-        return '{}: {}'.format(self.id, ', '.join(friendly_info))
+        friendly_info = ['{0}({1})'.format(k, raw_info[k]) for k in sorted(raw_info)]
+        return '{0}: {1}'.format(self.id, ', '.join(friendly_info))
 
     def _callback(self, event, *args):
         if self.__repo_callback_obj and hasattr(self.__repo_callback_obj, event):
