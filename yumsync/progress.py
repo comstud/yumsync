@@ -71,7 +71,7 @@ class Progress(object):
 
     def color(self, string, color=None):
         if color and hasattr(self.term, color):
-            return '{}{}{}'.format(getattr(self.term, color),
+            return '{0}{1}{2}'.format(getattr(self.term, color),
                                    string,
                                    self.term.normal)
         return string
@@ -80,7 +80,7 @@ class Progress(object):
     def pct(cls, current, total):
         """ Calculate a percentage. """
         val = current / float(total) * 100
-        formatted = '{:0.1f}%'.format(val)
+        formatted = '{0:0.1f}%'.format(val)
         return formatted if int(val) < 100 else 'complete'
 
     def elapsed(self):
@@ -95,12 +95,12 @@ class Progress(object):
         repos = self.repos.keys()
         max_repo = len(max(repos, key=len))
 
-        repo = '{:<{}s}'.format('Repository', max_repo)
-        done = '{:>5s}'.format('Done')
-        total = '{:>5s}'.format('Total')
+        repo = '{0:<{1}s}'.format('Repository', max_repo)
+        done = '{0:>5s}'.format('Done')
+        total = '{0:>5s}'.format('Total')
         complete = 'Packages'
         metadata = 'Metadata'
-        header_str = '{}  {}/{}  {}  {}'.format(repo, done, total, complete, metadata)
+        header_str = '{0}  {1}/{2}  {3}  {4}'.format(repo, done, total, complete, metadata)
 
         return header_str, len(repo), len(done), len(total), len(complete), len(metadata)
 
@@ -111,7 +111,7 @@ class Progress(object):
         Since there is a common column layout in the progress indicator, we can
         we can implement the printf-style formatter in a function.
         """
-        return '{}  {}  {}  {}'.format(reponame, package_counts, percent, repomd)
+        return '{0}  {1}  {2}  {3}'.format(reponame, package_counts, percent, repomd)
 
     def represent_repo_pkgs(self, repo_id, a, b):
         """ Format the ratio of packages in a repository. """
@@ -133,9 +133,9 @@ class Progress(object):
         typical done/total if total is > 0.
         """
         if numpkgs == 0:
-            return '{:^{}s}'.format('-', a + b + 1)
+            return '{0:^{1}s}'.format('-', a + b + 1)
         elif dlpkgs >= numpkgs:
-            return '{:>{}}'.format(dlpkgs, a + b + 1)
+            return '{0:>{1}}'.format(dlpkgs, a + b + 1)
         else:
             return '{0:>{2}}/{1:<{3}}'.format(dlpkgs, numpkgs, a, b)
 
@@ -165,14 +165,14 @@ class Progress(object):
         a number followed by the percent sign is displayed.
         """
         if dlpkgs == 0:
-            return '{:^{}s}'.format('-', length)
+            return '{0:^{1}s}'.format('-', length)
         else:
-            return '{:^{}s}'.format(self.pct(dlpkgs, numpkgs), length)
+            return '{0:^{1}s}'.format(self.pct(dlpkgs, numpkgs), length)
 
     def represent_repomd(self, repo_id, length):
         """ Display the current status of repository metadata. """
         if not self.repos[repo_id]['repomd']:
-            return '{:^{}s}'.format('-', length)
+            return '{0:^{1}s}'.format('-', length)
         else:
             return self.repos[repo_id]['repomd']
 
@@ -183,13 +183,13 @@ class Progress(object):
         formatted string, which makes nice columns.
         """
 
-        repo = '{:<{}s}'.format(repo_id, h1)
+        repo = '{0:<{1}s}'.format(repo_id, h1)
 
         if 'error' in self.repos[repo_id]:
             repo = self.color(repo, 'red')
-            packages = self.color('{:^{}s}'.format('error', h2 + h3 + 1), 'red')
-            percent = self.color('{:^{}s}'.format('-', h4), 'red')
-            metadata = self.color('{:^{}s}'.format('-', h5), 'red')
+            packages = self.color('{0:^{1}s}'.format('error', h2 + h3 + 1), 'red')
+            percent = self.color('{0:^{1}s}'.format('-', h4), 'red')
+            metadata = self.color('{0:^{1}s}'.format('-', h5), 'red')
         else:
             repo = self.color(repo, 'blue')
             packages = self.represent_repo_pkgs(repo_id, h2, h3)
@@ -204,7 +204,7 @@ class Progress(object):
         return self.format_line(repo, packages, percent, metadata)
 
     def represent_total(self, h1, h2, h3, h4, h5):
-        total = self.color('{:>{}s}'.format('Total', h1), 'yellow')
+        total = self.color('{0:>{1}s}'.format('Total', h1), 'yellow')
         packages = self.represent_total_pkgs(h2, h3)
         percent = self.represent_total_percent(h4)
         metadata = self.represent_total_metadata_percent(h5)
@@ -248,7 +248,7 @@ class Progress(object):
         self.linecount = 0  # reset line counter
         header, h1, h2, h3, h4, h5 = self.format_header()
         self.emit('-' * len(header))
-        self.emit(self.color('{}'.format(header), 'green'))
+        self.emit(self.color('{0}'.format(header), 'green'))
         self.emit('-' * len(header))
 
         error_repos = []
@@ -275,9 +275,9 @@ class Progress(object):
 
         # Append errors to output if any found.
         if self.totals['errors'] > 0:
-            self.emit(self.color('Errors ({}):'.format(self.totals['errors']), 'red'))
+            self.emit(self.color('Errors ({0}):'.format(self.totals['errors']), 'red'))
             for repo_id, error in self.errors:
-                self.emit(self.color('{}: {}'.format(repo_id, error), 'red'))
+                self.emit(self.color('{0}: {1}'.format(repo_id, error), 'red'))
 
         with self.term.location(x=0, y=self.linecount):
             sys.stdout.write(self.term.clear_eos())
